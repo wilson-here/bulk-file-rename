@@ -13,28 +13,11 @@ const options = {
 };
 
 const handleName = (err, files) => {
-  const createdTimeRef = [];
-
-  const promises = files.map((file, index) => {
-    return new Promise((resolve, reject) => {
-      (response) => {
-        fs.stat(`./test/${file}`, (err, stat) => {
-          console.log(stat.birthtimeMs);
-          createdTimeRef.push(stat.birthtimeMs);
-        });
-        resolve(createdTimeRef);
-      },
-        (error) => {
-          reject(error);
-        };
-    });
+  const result = files.map((file, index) => {
+    if (index === 0) return newName;
+    return `${newName}(${index})`;
   });
-
-  Promise.allSettled(promises).then((results) => {
-    results.forEach((result) => {
-      console.log(result);
-    });
-  });
+  console.log(result);
 };
 
 fs.readdir(targetUrl, options, handleName);
