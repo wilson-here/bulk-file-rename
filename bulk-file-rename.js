@@ -3,7 +3,6 @@ const newName = process.argv[3];
 const fileType = process.argv[4] || false;
 const recursive = process.argv[5] || false;
 
-const { log } = require("console");
 const fs = require("fs");
 const path = require("path");
 
@@ -12,12 +11,19 @@ const options = {
   recursive: recursive,
 };
 
-const handleName = (err, files) => {
-  const result = files.map((file, index) => {
-    if (index === 0) return newName;
-    return `${newName}(${index})`;
+const handleRename = (err, files) => {
+  files.map((file, index) => {
+    const finalName = index === 0 ? newName : `${newName}(${index})`;
+
+    const oldPath = path.join(targetUrl, file);
+    const fileExt = path.parse(oldPath).ext;
+    const newPath = path.join(targetUrl, `${finalName}${fileExt}`);
+
+    fs.rename(oldPath, newPath, (err) => {
+      if (!err) return;
+      console.error(err);
+    });
   });
-  console.log(result);
 };
 
-fs.readdir(targetUrl, options, handleName);
+fs.readdir(targetUrl, options, handleRename);
